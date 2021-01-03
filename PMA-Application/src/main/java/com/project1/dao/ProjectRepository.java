@@ -3,12 +3,13 @@ package com.project1.dao;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.project1.dto.ChartData;
+import com.project1.dto.TimeChartData;
 import com.project1.entities.Project;
 
-public interface ProjectRepository extends CrudRepository<Project, Long> {
+public interface ProjectRepository extends PagingAndSortingRepository<Project, Long> {
 		
 	@Override
 	public List<Project> findAll();
@@ -18,5 +19,13 @@ public interface ProjectRepository extends CrudRepository<Project, Long> {
 			"group by stage") 
 			
 	public List<ChartData> getProjectStatus();
+
+	public Project findByEmployeeId(long theId);
+	
+	@Query(nativeQuery=true, value="select start_date as startDate, end_date as endDate, name as projectName from project")
+	
+	public List<TimeChartData> getTimeData();
+	
+	
 	
 }

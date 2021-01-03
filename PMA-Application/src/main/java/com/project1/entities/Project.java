@@ -1,6 +1,7 @@
 package com.project1.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,16 +13,44 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Project {
 		
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="project_seq")
+	@SequenceGenerator(allocationSize=1, name = "project_generator")
+	
+	
 	private long projectId;
+	
+	
+	@NotBlank(message=" * Must give a name")
+	@Size(min=2, max=30)
 	private String name;
+	
+	
+	@NotBlank(message=" * Must give a stage")
+	@Size(min=2, max=15)
 	private String stage; // NOTSTARTED, COMPLETED, INPROGRESS
-	private String description;
+	
+	
+	@NotBlank(message=" * Must give a message")
+	@Size(min=2, max=500)
+	private String desc ription;
+	
+	
+	@NotBlank(message=" * Date cannot be empty")
+	private Date startDate;
+	
+	
+	@NotBlank(message=" * Date cannot be empty")
+	private Date endDate;
+	
+	
 	
 	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST},
 			fetch = FetchType.LAZY)
@@ -29,6 +58,8 @@ public class Project {
 				joinColumns=@JoinColumn(name="project_id"),
 				inverseJoinColumns=@JoinColumn(name="employee_id")
 	)
+	
+	@JsonIgnore
 	private List<Employee> employees;
 		
 	public Project() {
@@ -42,6 +73,26 @@ public class Project {
 		this.description = description;
 	}
 	
+	
+	
+	
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 	public List<Employee> getEmployees() {
 		return employees;
 	}

@@ -9,28 +9,64 @@
 
 <!-- this is the code for the navbar-->
 <nav th:replace="layouts::navbar"></nav>
-
+	
+	<br>
+	
 	<div class="container">
-		<form action="/projects/save" th:object="${project}" method="POST">
-
-				<input type="text" placeholder="Project Name" th:field="${project.name}">
-			
-				<select th:field="${project.stage}">
-					<option th:value="NOTSTARTED">Not Started</option>
-					<option th:value="INPROGRESS">In Progress</option>
-					<option th:value="COMPLETED">Completed</option>
+		<form th:action="@{/projects/save}" th:object="${project}" method="POST">
+					
+						
+				<!-- will be used to bind the employee that was clicked on-->
+				<input type='hidden' th:field="{project.projectId}"/>
+				
+				
+				<div class="form-group row">	
+					<input type="text" placeholder="Project Name" th:field="${project.name}">
+					<span style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="${project.name}"></span>
+				</div>
+				
+				
+				<div class="form-group row">
+					<select th:field="${project.stage}">
+						<option th:value="NOTSTARTED">Not Started</option>
+						<option th:value="INPROGRESS">In Progress</option>
+						<option th:value="COMPLETED">Completed</option>
+						<span style="color:red" th:if="${#fields.hasErrors('stage')}" th:errors="${project.stage}"></span>
+					</select>
+				</div>
+				
+				<div class="form-group row">
+					<textarea type="text" placeholder="Enter Project Description" th:field="${project.description}"></textarea>
+					<span style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="${project.description}"></span>
+				</div>
+		
+		
+			<div class="form-group row">
+				<select th:field="*{employees}" multiple="multiple">
+					<option th:each = "employee : ${allEmployees}"
+							th:value = "${employee.employeeId}"
+							th:text = "${employee.firstName}">
+					</option>		
 				</select>
+			</div>
+			
+			
+				Project Start Date 
+				<div class="form-group row">	
+					<input id="dp3" type="text" class="mb-4 col-2 col-xs-4" value="Start Date" th:field="${project.startDate}">
+				</div>
 				
-			<textarea type="text" placeholder="Enter Project Description" th:field="${project.description}"></textarea>
-
-			<select th:field="*{employees}" multiple="multiple">
-				<option th:each = "employee : ${allEmployees}"
-						th:value = "${employee.employeeId}"
-						th:text = "${employee.firstName}">
-				</option>		
-			</select>
+				Project End Date
+				<div class="form-group row">	
+					<input id="dp4" type="text" class="mb-4 col-2 col-xs-4" value="End Date" th:field="${project.endDate}">
+				</div>
+			
+				<script type="text/javascript">
+				$('#dp3').datepicker();
+				$('#dp4').datepicker();
+				</script>
 				
-			<button type="submit">Create Project</button>
+			<button class="btn btn-info col-2" type="submit">Enter Project</button>
 			
 		
 		</form>

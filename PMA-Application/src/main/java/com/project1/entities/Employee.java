@@ -11,17 +11,31 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project1.validators.UniqueValue;
 
 @Entity
 public class Employee {
 		
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="employee_seq")
+	@SequenceGenerator(allocationSize=1, name = "employee_generator")
 	private long employeeId;
 	
+	@NotBlank(message=" * Must give a first name")
+	@Size(min=2, max=50)
 	private String firstName;
+	
+	@NotBlank(message=" * Must give a last name")
+	@Size(min=2, max=50)
 	private String lastName;
-	private String email;
+	
+	@NotBlank(message=" * Must be a valid email address")
+	@Email
+	@UniqueValue()
+ 	private String email;
 	
 	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST},
 			fetch = FetchType.LAZY)
@@ -30,7 +44,7 @@ public class Employee {
 				inverseJoinColumns=@JoinColumn(name="project_id")
 	)
 	
-
+	@JsonIgnore
 	private List<Project> projects;
 	
 	
